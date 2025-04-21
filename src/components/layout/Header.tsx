@@ -36,10 +36,17 @@ const Header: React.FC = () => {
           {/* Logo */}
           <NavLink 
             to="/" 
-            className="flex items-center space-x-2 text-primary-500 hover:text-primary-600 transition-colors"
+            className="flex items-center space-x-2 text-primary-500 hover:text-primary-400 transition-colors group"
             onClick={() => setMenuOpen(false)}
           >
-            <img src="/hugging-face.png" alt="Hugging Face Logo" className="w-8 h-8" />
+            <div className="relative">
+              <img 
+                src="/hugging-face.png" 
+                alt="Hugging Face Logo" 
+                className="w-8 h-8 transition-all duration-300 dark:filter dark:brightness-110 
+                dark:drop-shadow-[0_0_8px_rgba(0,175,175,0.5)] group-hover:dark:drop-shadow-[0_0_12px_rgba(0,175,175,0.7)]" 
+              />
+            </div>
             <span className="font-display font-bold text-xl">Snug</span>
           </NavLink>
 

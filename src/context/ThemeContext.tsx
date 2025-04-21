@@ -12,12 +12,17 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [theme, setTheme] = useState<ThemeMode>('light');
 
   useEffect(() => {
-    // Check for saved theme preference or system preference
+    // Remove dark mode class by default
+    document.documentElement.classList.remove('dark');
+    
+    // Only apply dark mode if explicitly saved
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark' || 
-        (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    if (savedTheme === 'dark') {
       setTheme('dark');
       document.documentElement.classList.add('dark');
+    } else {
+      // Ensure light mode is saved as the default
+      localStorage.setItem('theme', 'light');
     }
   }, []);
 
