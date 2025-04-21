@@ -19,9 +19,13 @@ const Snuggie: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const initialLoadRef = useRef(true);
+  const hasScrolledRef = useRef(false);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (!initialLoadRef.current || hasScrolledRef.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   useEffect(() => {
@@ -40,6 +44,14 @@ const Snuggie: React.FC = () => {
         },
       ]);
     }
+  }, []);
+
+  // Set initialLoadRef to false after component mounts
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      initialLoadRef.current = false;
+    }, 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   const analyzeSentiment = async (text: string): Promise<{ score: number; magnitude: number }> => {

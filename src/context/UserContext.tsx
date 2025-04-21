@@ -1,6 +1,8 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { User, Badge } from '../types';
 import { generateId } from '../utils/helpers';
+import { auth } from '../utils/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 interface UserContextType {
   user: User | null;
@@ -58,17 +60,31 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isGuest, setIsGuest] = useState<boolean>(false);
 
   useEffect(() => {
-    // Check for saved user data
-    const savedUser = localStorage.getItem('snugUser');
-    const guestFlag = localStorage.getItem('snugGuest');
-    
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-    
-    if (guestFlag === 'true') {
-      setIsGuest(true);
-    }
+    // Listen to Firebase auth state changes
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        // Create or update user in UserContext when Firebase user exists
+        const newUser: User = {
+          id: firebaseUser.uid,
+          name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
+          streak: 0,
+          badges: [...initialBadges],
+          prefersDarkMode: false
+        };
+        setUser(newUser);
+        setIsGuest(false);
+        localStorage.setItem('snugUser', JSON.stringify(newUser));
+        localStorage.removeItem('snugGuest');
+      } else {
+        // Clear user when Firebase user is null
+        setUser(null);
+        setIsGuest(false);
+        localStorage.removeItem('snugUser');
+        localStorage.removeItem('snugGuest');
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const login = (name: string) => {

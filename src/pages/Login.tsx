@@ -58,7 +58,7 @@ const Login: React.FC = () => {
         transition={{ duration: 0.5 }}
       >
         <div className="text-center mb-8">
-          <img src="/snug-logo.svg" alt="Snug Logo" className="w-16 h-16 mx-auto mb-4" />
+          <img src="/hugging-face.png" alt="Hugging Face Logo" className="w-16 h-16 mx-auto mb-4" />
           <h2 className="text-2xl font-display font-bold text-gray-900 dark:text-white">
             {isLogin ? 'Welcome back' : 'Create your account'}
           </h2>
